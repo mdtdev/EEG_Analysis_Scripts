@@ -110,7 +110,14 @@ end
 % for the 'pre' data block:
 
 blob_pre.Fs = 128;
-blob_pre.data = data{3};    % NB: data{1} and data{2} are empty--not used!
+blob_pre.data = data{3}';    % NB: data{1} and data{2} are empty--not used!
+
+% IMPORTANT: Remember that the blobs have their data TRANSPOSED from how
+% eeglab does things. That is, data in eeglab's "EEG" data block are in
+% channels by time/samples; while the blobs are samples/time X channels.
+% Just use the Matlab transpose operator to 'flip' the matrix as needed.
+% This is the single quote after the data{3} in the last line of code
+% above.
 
 fprintf('\n\nHere is the data blob before re-referencing:\n\n');
 blob_pre
@@ -132,17 +139,14 @@ fprintf('\nNote that both the original and re-referenced data is saved.\n\n');
 % This is just to finish the demo--at this point you could do anything you
 % wanted with the re-referenced data.
 
+segment = 100:200;
+
 figure;
-subplot(3,1,1);
-plot(blob_pre.data(2,100:500), 'b');
-subplot(3,1,2);
-plot(blob_pre.dataAveRef(2,100:500), 'b');
+plot(segment, blob_pre.data(segment,3), 'color', [0.4 0.4 0.4], 'Marker', '.');
 hold on
-plot(blob_pre.data(2,100:500), 'r');
-subplot(3,1,3);
-plot(blob_pre.dataParietalRef(2,100:500), 'b');
-
-
+plot(segment, blob_pre.dataAveRef(segment,3),      'r');
+plot(segment, blob_pre.dataParietalRef(segment,3), 'b');
+legend('Left Mastoid (Original)', 'AVE/AVG','Average Parietal', 'Location', 'NorthWest');
 
 
 
