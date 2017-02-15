@@ -1,6 +1,6 @@
-function AIS = newAlphaAsymmetry(EDB, overlap, duration, logbase)
+function AIS = newAlphaAsymmetry(eegDataBlob, overlap, duration, logbase)
 
-% AIS = newAlphaAsymmetry(EDB, overlap, duration, logbase)
+% AIS = newAlphaAsymmetry(eegDataBlob, overlap, duration, logbase)
 %
 % Returns alpha imbalance scores a la Harmon-Jones (2006; references at
 % bottom). Result is a vector of alpha imblance scores. This function does
@@ -33,7 +33,7 @@ function AIS = newAlphaAsymmetry(EDB, overlap, duration, logbase)
     end
     
     if nargin < 2
-        overlap = 0.25;     % Previous work?
+        overlap = 0.50;     % New setting for more smoothing for EPOC
     end
     
     % Construct FFT Windows (Mostly from gmac01.m; see for details!)
@@ -55,12 +55,8 @@ function AIS = newAlphaAsymmetry(EDB, overlap, duration, logbase)
     betaIndex     = find(f >  13 & f <  25); % No more high and low beta as in gmac01
     gammaIndex    = find(f >= 25 & f <= 40);
     totIndex      = find(f >=  4 & f <= 40);
+    usefulSpec    = find(f >=  2 & f <= 40);
     outdata       = [];    
-    
-    for j = 2:size(eegDataBlob.data, 1)
-        preVal = a * eegDataBlob.data(j, :) + b * preVal;
-        eegDataBlob.filterData(j, :) = eegDataBlob.data(j, :) - preVal;
-    end
     
     % Make locations to store frequency powers
     
@@ -73,10 +69,12 @@ function AIS = newAlphaAsymmetry(EDB, overlap, duration, logbase)
     
     % Main power computation
     %
-    % Overlap is 25% of duration by default, based loosely on Harmon-Jones
+    % Overlap is 50% of duration by default, based loosely on Harmon-Jones
+    % and the EPOC's noisiness
     
     stepSamples   = ceil((1 - overlap)*fftlength);
-        
+    allSpectra = zeros(length(fftlength:stepSamples:size(eegDataBlob.filterData,1)),length(usefulSpec))
+    
     for k = fftlength:stepSamples:size(eegDataBlob.filterData,1)
         spectrum  = fft(eegDataBlob.filterData(k - fftlength + 1:k, :) .* hanning);
         spectrum  = sqrt(spectrum .* conj(spectrum)); 
@@ -87,6 +85,8 @@ function AIS = newAlphaAsymmetry(EDB, overlap, duration, logbase)
         eegDataBlob.gamma = [eegDataBlob.gamma; k sum(spectrum(gammaIndex, :))];
         eegDataBlob.tot   = [eegDataBlob.tot;   k sum(spectrum(totIndex, :))];
     end
+        
+
     
     averageAlphaPowerByChannel = mean(eegDataBlob.alpha(:,2:15));
     
