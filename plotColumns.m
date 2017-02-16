@@ -85,33 +85,24 @@ end;
 [M,N]   =   size(data);
 
 if(~logical(exist('t','var')))
-
     t = [1:M]';
-
 end;
 
 L = length(colors);
 h = zeros(N,1);
 
 for k=1:N
-
     h(k) = plot(t,data(:,k)+k,char(colors(mod(k,L)+1)));
-
     if(k==1), hold on; end;
-
 end;
 
 axis tight;
 
 if(strcmp(plotopt,'print'))
-
     set(gca,'fontsize',16,'fontweight','b');
     set(gcf,'color','w');
-
 end;
 
 if(nargout > 0)
-
     varargout{1} = h;
-
 end;
