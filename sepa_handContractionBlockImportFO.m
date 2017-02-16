@@ -18,7 +18,7 @@ function sepa_handContractionBlockImportFO(files, outfile)
 
     % CSV Header Line
     
-    fprintf(fid, 'subject,session,hand,preF34, preFC56,postF34, postFC56\n');
+    fprintf(fid, 'subject,session,hand,preF34,preFC56,postF34,postFC56\n');
     
 
     for file = files'
