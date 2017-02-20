@@ -25,7 +25,7 @@ function AIS = newAlphaAsymmetry(eegDataBlob, overlap, duration, logbase)
     % SETUP and Defaults
     
     if nargin < 4
-        logbase = exp(1);   % Switched to e b/c Allen at al (2004)
+        logbase = exp(1);   % Switched to exp b/c Allen at al (2004)
     end
 
     if nargin < 3
