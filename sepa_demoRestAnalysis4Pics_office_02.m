@@ -33,10 +33,15 @@ overlap  = 0.25;
 
 %% Plots
 %
-% The first thing to do is define some colors:
+% The first thing to do is define some colors and readin electrode locations:
 
 ltgray = [0.75 0.75 0.75];
 pkgray = [0.90 0.90 0.90];
+
+
+fid = fopen('emotiv_location_list.txt');
+txt = textscan(fid,'%s','delimiter','\n');
+electrode_names = txt{1};
 
 % Compare averages:
 
@@ -74,8 +79,18 @@ alt_chan = 14:-1:8;
 figure;
 subplot(2,4,1);
 
-for ii = 1:6
-
+for ii = 1:7
+    subplot(2,4,ii);
+    h1 = plot(freqOpen, apsOpen(:, ii), 'r', 'LineWidth', 4);
+    xlabel('\fontsize{14}Frequency (Hz)');
+    ylabel('\fontsize{14}Power (Square Units)');
+    hold on;
+    h2 = plot(freqOpen, apsOpen(:, alt_chan(ii)), 'g', 'LineWidth', 4);
+    legendInfo{1} = char(strcat(electrode_names(ii), ' Average Power Spectrum'));
+    legendInfo{2} = char(strcat(electrode_names(alt_chan(ii)), ' Average Power Spectrum'));
+    legend(legendInfo);
+end
+    
 
 
 
