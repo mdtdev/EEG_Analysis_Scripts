@@ -3,7 +3,7 @@
 % MDT
 % 2017.02.20
 
-EEG      = pop_loadset('sub034-oc-before-21.10.16.13.21.00.set');
+EEG      = pop_loadset('sub034-oc-after-21.10.16.13.58.15.set');
 EEG_only = pop_select(EEG, 'channel', 3:16);
 EEG_only = pop_eegfilt(EEG_only, 1, 41, [], [0], 0, 0, 'fir1', 0);
 
@@ -48,14 +48,14 @@ electrode_names = txt{1};
 % First for unthresholded data:
 
 figure; 
-h1 = plot(freqOpen, apsOpen(:, 3), 'r', 'LineWidth', 4);
+h1 = plot(freqOpen, apsOpen(:, 4), 'r', 'LineWidth', 4);
 xlabel('\fontsize{14}Frequency (Hz)');
 ylabel('\fontsize{14}Power (Square Units)');
 hold on;
-h2 = plot(freqOpen, apsOpen(:, 12), 'g', 'LineWidth', 4);
-legend([h1, h2], {'F3 Average Power Spectrum', 'F4 Average Power Spectrum'}, 'FontSize', 14);
-title('\fontsize{20}Averages for F3/F4 Sites (Original Data)');
-
+h2 = plot(freqOpen, apsOpen(:, 11), 'g', 'LineWidth', 4);
+legend([h1, h2], {'FC5 Average Power Spectrum', 'FC6 Average Power Spectrum'}, 'FontSize', 14);
+title('\fontsize{20}Averages for FC5/6 Sites (Original Data)');
+ylim([0, 900]);
 
 % With Alpha region highlight:
 

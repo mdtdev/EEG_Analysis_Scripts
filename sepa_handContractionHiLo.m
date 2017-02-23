@@ -1,13 +1,14 @@
-function AIS = sepa_handContraction(filename)
+function [AISHi, AISLo] = sepa_handContractionHiLo(filename)
 
-% AIS = sepa_handContraction(filename)
+% [AISHi, AISLo] = sepa_handContractionHiLo(filename)
 %
 % Version of the calculations for the alpha asymmetry research for SEPA
 % 2017 meeting. This is temporary and will be replaced by better, more
-% validated code after the meeting.
+% validated code after the meeting. This variant splits the alpha frequency
+% range into the high alpha (> 10 and <= 13) and low (>= 8 and <= 10).
 %
 % MDT
-% 2017.02.16
+% 2017.02.23
 
 
     lowerBound  = 1;        % Keep filter bounds outside of the EEG 
@@ -19,7 +20,7 @@ function AIS = sepa_handContraction(filename)
     elseif regexp(filename,'edf$')
         EEG = pop_biosig(filename);
     else
-        error('sepa_handContraction: File type unknown');
+        error('sepa_handContractionHiLo: File type unknown');
     end
     
     EEG_only = pop_select(EEG, 'channel', eegChannels);
@@ -33,7 +34,7 @@ function AIS = sepa_handContraction(filename)
     blob.Fs = 128;
 
     for ii = 3:5
-        blob.data = data{ii}';
-        AIS{ii}   = sepa_alphaAsymmetry(blob);
+        blob.data                = data{ii}';
+        [AISHi{ii}, AISLo{ii}]   = sepa_alphaAsymmetryHiLo(blob);
     end
 end
