@@ -37,7 +37,7 @@ function [AASHi, AASLo] = sepa_alphaAsymmetryHiLo(eegDataBlob, overlap, duration
     
     [aps, freq, ~] = averagePowerSpectrum(eegDataBlob.data, eegDataBlob.Fs, duration, overlap);
     hiAlphaIndex   = find(freq >  10 & freq <= 13);
-    loAlphaIndex   = fins(freq >=  8 & freq <= 10); % More or less Smith et al.
+    loAlphaIndex   = find(freq >=  8 & freq <= 10); % More or less Smith et al.
     avgHiAlphaPowers = sum(aps(hiAlphaIndex, :));
     avgLoAlphaPowers = sum(aps(loAlphaIndex, :));
     
