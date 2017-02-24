@@ -19,16 +19,15 @@ function [zHi zLo] = sepa_subjectNormalizedSiteScores(eegDataBlob, overlap, dura
     if nargin < 2
         overlap = 0.50;     % New setting for more smoothing for EPOC
     end
-    
-    hiAlphaIndex   = find(freq >  10 & freq <= 13);
-    loAlphaIndex   = find(freq >=  8 & freq <= 10);
-    
+
     % Obtain the average power spectrum:
     
     [aps, freq, ~] = averagePowerSpectrum(eegDataBlob.data, eegDataBlob.Fs, duration, overlap);
     
     % Pick out alpha power for each site
     
+    hiAlphaIndex   = find(freq >  10 & freq <= 13);
+    loAlphaIndex   = find(freq >=  8 & freq <= 10);
     siteHiAlphaPowers = sum(aps(hiAlphaIndex, :));
     siteLoAlphaPowers = sum(aps(loAlphaIndex, :));
     
@@ -36,13 +35,6 @@ function [zHi zLo] = sepa_subjectNormalizedSiteScores(eegDataBlob, overlap, dura
     
     zHi = zscore(siteHiAlphaPowers ./ sum(siteHiAlphaPowers));
     zLo = zscore(siteLoAlphaPowers ./ sum(siteLoAlphaPowers));
-    
-    
-    
-    
-    
-
-    
     
 end
 
