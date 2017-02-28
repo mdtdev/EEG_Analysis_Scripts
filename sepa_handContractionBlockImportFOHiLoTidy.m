@@ -4,8 +4,8 @@ function sepa_handContractionBlockImportFOHiLoTidy(files, outfile)
 %
 % Imports a block of files in the required format for Dom Parrott's "TAP"
 % experiments and also for the hand contrraction study. Uses the
-% ge_parrottImport.m function to resolve markers and pre-process data. Uses
-% a dir() object as input! (Will break on a list or some other format.
+% sepa_parrottImport.m function to resolve markers and pre-process data.
+% Uses a dir() object as input! (Will break on a list or some other format.
 %
 % The TIDY variant puts the data into the tidy format, see:
 %

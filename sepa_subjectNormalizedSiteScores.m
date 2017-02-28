@@ -1,4 +1,4 @@
-function [zHi zLo] = sepa_subjectNormalizedSiteScores(eegDataBlob, overlap, duration)
+function [zHi, zLo] = sepa_subjectNormalizedSiteScores(eegDataBlob, overlap, duration)
 
 % [zHi zLo] = sepa_subjectNormalizedSiteScores(eegDataBlob, overlap, duration)
 %
