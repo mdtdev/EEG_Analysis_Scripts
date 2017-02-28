@@ -33,7 +33,7 @@ function sepa_handContractionBlockImportZ(files, outfile)
         sessionnumber  = regexprep(namelist{2}, '^S', '');
         
         % Data analysis to get AIS's:
-        [hi, lo] = sepa_parrotImportZ(file.name);
+        [hi, lo] = sepa_handContractionZ(file.name);
         
         % Write the HI data to the file
         fprintf(fid, '%s,%s,%s,%s,%s,%s,%f\n',  subnum, sessionnumber, handorder, 'high', 'pre',  'F3',  hi{3}(3));
