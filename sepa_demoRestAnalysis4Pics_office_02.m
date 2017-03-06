@@ -3,7 +3,7 @@
 % MDT
 % 2017.02.20
 
-EEG      = pop_loadset('sub034-oc-after-21.10.16.13.58.15.set');
+EEG      = pop_loadset('sub034-oc-before-21.10.16.13.21.00.set');
 EEG_only = pop_select(EEG, 'channel', 3:16);
 EEG_only = pop_eegfilt(EEG_only, 1, 41, [], [0], 0, 0, 'fir1', 0);
 

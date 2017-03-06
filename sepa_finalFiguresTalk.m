@@ -45,7 +45,7 @@ ltgray   = [0.75 0.75 0.75];
 pc = 3;  % Plot the 3rd channel (F3)
 
 f1 = figure;
-h = plotColumns(freq, stac(:, pc, :), {'c'});
+h = plotColumns(freq, stac(:, pc, :), {'r','g','b','c'});
 for ii = 1:length(h)
     set(h(ii), 'color', ltgray);
 end
@@ -63,6 +63,16 @@ x        = size(stac);
 saveas(gcf, filename);
 fprintf(['\nPlot ', filename, ' is the result of  ', num2str(x(3), '%d'), ' intervals.\n']);
 
+%% "Thin" Spectrum Plot
+%
+
+f1 = figure;
+h = plotColumns(freq, stac(:, pc, 25:28), {'r','g','b','c'});
+xlabel('\fontsize{18}Frequency (Hz)');
+ylabel('\fontsize{18}Power');
+title('\fontsize{20}Power Spectra for F3 (Left) Site');
+saveas(gcf, 'sepa_thin_spectra.png');
+
 %% Asymmetry at Rest Plot
 %
 % This plot shows the right and left averages at rest. There is a clear
@@ -71,21 +81,77 @@ fprintf(['\nPlot ', filename, ' is the result of  ', num2str(x(3), '%d'), ' inte
 [aps, freq, stac] = averagePowerSpectrum(s704.pre, s704.Fs, duration, overlap);
 
 f2 = figure;
-h1 = plot(freq, aps(:, 3),  'r', 'LineWidth', lw);  % F3 (Channel 3)
-hold on;
 h2 = plot(freq, aps(:, 12), 'g', 'LineWidth', lw);  % F4 (Channel 12)
+hold on;
+h1 = plot(freq, aps(:, 3),  'r', 'LineWidth', lw);  % F3 (Channel 3)
 ylim([0 600]);
 xlabel('\fontsize{18}Frequency (Hz)');
 ylabel('\fontsize{18}Power');
-title('\fontsize{20}Average Spectrum Left vs Right at Rest');
+title('\fontsize{20}Average Spectrum Left vs Right at Rest (S704)');
 legend([h1 h2], {'F3 (Left)', 'F4 (Right)'}, 'FontSize', 14, 'FontWeight', 'bold');
+
+% Set the alpha highlight:
+
+pkgray   = [0.92 0.92 0.92];
+p1 = patch([8 13 13 8],[0 0 599 599], pkgray);
+set(p1, 'EdgeColor', 'none');
+set(gca,'children',flipud(get(gca,'children')))
 
 % Save figure and report number of intervals that went into it
 
-filename = 'sepa_RestingLeftVsRight.png';
+filename = 'sepa_RestingLeftVsRightWithPatch.png';
 x        = size(stac);
 saveas(gcf, filename);
 fprintf(['\nPlot ', filename, ' is the result of  ', num2str(x(3), '%d'), ' intervals.\n']);
+
+%% Different Subject (with Greater Asymmetry)
+%
+EEG      = pop_loadset('sub034-oc-before-21.10.16.13.21.00.set');
+EEG_only = pop_select(EEG, 'channel', 3:16);
+EEG_only = pop_eegfilt(EEG_only, 1, 41, [], [0], 0, 0, 'fir1', 0);
+ge_makeEventList(EEG)
+s34tap.opendata   = EEG_only.data(1:14, 938:18580)';
+s34tap.closeddata = EEG_only.data(1:14, 21115:39114)';
+s34tap.Fs         = 128;
+
+% Obtain all the power spectra and their average:
+[apsOpen, freqOpen, stacOpen] = averagePowerSpectrum(s34tap.opendata, s34tap.Fs, duration, overlap);
+% Comparison figure:
+figure; 
+h1 = plot(freqOpen, apsOpen(:, 3), 'r', 'LineWidth', lw);
+xlabel('\fontsize{18}Frequency (Hz)');
+ylabel('\fontsize{18}Power (Square Units)');
+hold on;
+h2 = plot(freqOpen, apsOpen(:, 12), 'g', 'LineWidth', lw);
+legend([h1, h2], {'F3 Average Power Spectrum', 'F4 Average Power Spectrum'}, 'FontSize', 14);
+title('\fontsize{20}Averages for F3/F4 Sites (Original Data; S34)');
+p1 = patch([8 13 13 8],[0 0 799 799], pkgray)
+set(p1, 'EdgeColor', 'none');
+set(gca,'children',flipud(get(gca,'children')))
+% Save as a file:
+filename = 'sepa_AltSubjRestWithPatch.png';
+x        = size(stac);
+saveas(gcf, filename);
+fprintf(['\nPlot ', filename, ' is the result of  ', num2str(x(3), '%d'), ' intervals.\n']);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
