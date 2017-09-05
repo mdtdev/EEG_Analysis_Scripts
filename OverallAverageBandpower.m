@@ -1,4 +1,4 @@
-%% Bandpower for Entire Run
+%% Band power for Entire Run
 %
 % This program calculates the bandpower in chunks of n minutes
 % (non-overlapping) for the entire run of a subject and reports the average
@@ -23,33 +23,39 @@ channels    = 1:numChannels;
 
 %% Three Nested Loops
 
+% Loop over files
+
+% Loop over 
 
 
 
+%% for one channel:
 
-%% Auxillary Functions
-%
-% To make the code easier to read, we sometimes define "functions" to
-% encapsulate bits of our work.
+vp=[];
+for k  = startpoints(1:end-1)
+    [s, t, a, b]  = EEGBandProportions(d(channel, k:(k+m)), Fs);
+    vp = [vp; s t a b];
+end
 
-function [deltaP, thetaP, alphaP, betaP] = bandProportions(wave, Fs)
+%% for all channels
 
-% bandProportions.m
-%
-% Computes the power in each band, then converts these to proportions.
-
-    bandDelta = [ 1  4];    % Due to filtering, everything < 1 Hz ~0
-    bandTheta = [ 4  8];
-    bandAlpha = [ 8 14];    % Wikipedia's alpha (Electroencphalography Article)
-    bandBeta  = [14 31];
-    
-    deltaP = bandpower(wave, Fs,bandDelta) ./ bandpower(d(channel, k:(k+m)), Fs, [1 41]);
-
-
+vp=[];
+for k  = startpoints(1:end-1)
+    [s, t, a, b]  = EEGBandProportions(d(channel, k:(k+m)), Fs);
+    vp = [vp; s t a b];
 end
 
 
 
+
+
+
+
+
+
+
+
+%%% Draft code below this
 
 
 %Bandpower Loop
@@ -61,11 +67,11 @@ for jj = 1:numberOfFiles
     x = pop_loadset(f); %loads data
     len =x.pnts;
     d=x.data;
-    startpoints=1:m:len;
+    startpoints=1:oneMinute:len;
     vp= [];
-    for k= startpoints(1:end-1);
+    for k= startpoints(1:end-1)
         b=bandpower(d(channel, k:(k+m)),Fs,[8 13])/ bandpower(d(channel, k:(k+m)), Fs, [1 41]);
-        vp=[vp b]
+        vp=[vp; b]
     end
     k= startpoints(1:end-1);
     b=bandpower(d(channel, k:(k+m)),Fs,[8 13])/ bandpower(d(channel, k:(k+m)), Fs, [1 41]);
@@ -75,12 +81,35 @@ for jj = 1:numberOfFiles
     pause
 end
 
-%printing files
-for s= 1:numberOfFiles
-f= listOfFiles(s).name;
-EEG=pop_loadset(f);
-len=EEG.pnts;
-r=(len/128)/60;
-fprintf('%s\t %g \n', f, r);
-end
+% %printing files
+% for s= 1:numberOfFiles
+% f= listOfFiles(s).name;
+% EEG=pop_loadset(f);
+% len=EEG.pnts;
+% r=(len/128)/60;
+% fprintf('%s\t %g \n', f, r);
+% end
 
+%% Auxillary Functions
+%
+% To make the code easier to read, we sometimes define "functions" to
+% encapsulate bits of our work.
+
+% % % function [deltaP, thetaP, alphaP, betaP] = bandProportions(wave, Fs)
+% % % 
+% % %     % bandProportions.m
+% % %     %
+% % %     % Computes the power in each band, then converts these to proportions.
+% % % 
+% % %     bandDelta = [ 1  4];    % Due to filtering, everything < 1 Hz ~0
+% % %     bandTheta = [ 4  8];
+% % %     bandAlpha = [ 8 14];    % Wikipedia's alpha (Electroencphalography Article)
+% % %     bandBeta  = [14 31];
+% % %     bandAll   = [ 1 31];
+% % %     
+% % %     deltaP = bandpower(wave, Fs, bandDelta) ./ bandpower(wave, Fs, bandAll);
+% % %     thetaP = bandpower(wave, Fs, bandTheta) ./ bandpower(wave, Fs, bandAll);
+% % %     alphaP = bandpower(wave, Fs, bandAlpha) ./ bandpower(wave, Fs, bandAll);
+% % %     betaP  = bandpower(wave, Fs,  bandBeta) ./ bandpower(wave, Fs, bandAll);
+% % %     
+% % % end
