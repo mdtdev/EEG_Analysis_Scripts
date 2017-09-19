@@ -17,7 +17,7 @@ function [deltaP, thetaP, alphaP, betaP] = EEGBandProportions(wave, Fs)
     bandTheta = [ 4  8];
     bandAlpha = [ 8 14];    % Wikipedia's alpha (Electroencphalography Article)
     bandBeta  = [14 31];
-    bandAll   = [ 1 31];
+    bandAll   = [ 1 41];    % Whole thing so more than above! (Some gamma.)
     
     wave = wave';
     
