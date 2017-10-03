@@ -18,6 +18,10 @@ numberOfFiles = length(listOfFiles);
 % Outputs
 fileID = fopen(resultFile,'wt');
 
+% Header for TSV/CSV
+fprintf(fileID,'filename\tlength(min)\tname\tvalue\n');
+
+
 %% Analysis
 %
 
@@ -34,39 +38,24 @@ for ff = 1:numberOfFiles
     
     
     while endWindow < endPoint
+        
+        % This returns the power in each frequency range for each channel
+        % in a matrix with rows for channels and columns for bands in the
+        % column order delta theta alpha beta.
         freqBlock = EEGBandProportionBlock(data(:,startWindow:endWindow), Fs);
+        
+        % Now we make a derived quantity. For example, this averages for
+        % each band across channels (do it interactively to see!)
         freqMeans = mean(freqBlock);
         
-        
-        
-    end
-    
-    
-    startpoints=1:m:len;
-    avpByChannel = [];%array that stores avp values
-    avpByLobeFL_PL=[];
-    avpByLobeFR_PR=[];
-    for channel = 1:14
-        vp= [];
-        for k = startpoints(1:end-1)
-            b = bandpower(data(channel, k:(k+m)),Fs,[8 13])/ bandpower(data(channel, k:(k+m)), Fs, [1 41]); % gives you the alpha power per file
-            vp=[vp b];
+        % Write the data to file -- needs to be changed for each derived
+        % quantity
+        bandNames = ["delta", "theta", "alpha", "beta"]
+        for kk = 1:4
+            fprintf(fileID,'%s\t%g\t%s\t%g\n', filename, time, bandNames(kk), freqMeans(kk));
         end
-        avp = mean(vp); % finds the mean of the alpha power per file ( I need to section to per channel and put into new variable aavp)
-        avpByChannel = [avpByChannel avp];
-           
+        startWindow = startWindow + ceil((1 - overlapP)*windowSize);
     end
-    averageavp = mean(avpByChannel);
-   
-    fprintf(fileID,'%s\t%g\t%g\t%g\n',filename,FL,avgelectrodes,time);
-    fprintf(fileID,'%s\t%g\t%g\t%g\n',filename,PL,avgelectrodes,time);
-    fprintf(fileID,'%s\t%g\t%g\t%g\n',filename,FR,avgelectrodes,time);
-    fprintf(fileID,'%s\t%g\t%g\t%g\n',filename,PR,avgelectrodes,time);
 end
 
-
-
-
 fclose(fileID);
-
-%fprintf(fileID,'filename\tlength(min)\tname\tvalue\n');
