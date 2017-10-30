@@ -19,24 +19,44 @@
     r   = (len/Fs);          % Convert samples to seconds
     d   = x.data;               % Pull voltage data into d
 
-    Mwidth = floor(len/((1-overlap)*m) - 1); % This may be 1 column short!
-
-    vt     = zeros(1, Mwidth);
-    Ma      = zeros(14, Mwidth);
+    Mwidth  = floor(len/((1-overlap)*m) - 1); % This may be 1 column short!
+    vt      = zeros(1, Mwidth);
+    PM      = zeros(14, Mwidth);
 
     s = 1;
     k = 1;
     while s + m < len
-        %ba = bandpower(d(channel, s:(s+m)),Fs,[8 13]) / bandpower(d(channel, s:(s+m)), Fs, [1 41]);
         [avgPwrSpec, freqAxis, ~] = averagePowerSpectrum(d(:, s:(s+m))', Fs, windowTime, 0);  % Overlap is two things in this code!!
         [M,i] = max(avgPwrSpec);
         winners = freqAxis(i)';
         
         t = (s/128);
-        Ma(:, k) = winners;
+        PM(:, k) = winners;
         vt(k) = t;
         k = k + 1;
         s = s + ceil((1-overlap)*m); 
     end
 
-%% Produces Ma sized 14x1749 of peak frequencies
+%% Produces PM sized 14x1749 of peak frequencies
+
+thetaRuns = (PM >= 4) & (PM < 8);
+
+% One row:
+
+es    = sprintf('%d',thetaRuns(5,:));
+tcell = textscan(es, '%s', 'delimiter', '0', 'multipleDelimsAsOne', 1);
+ed = tcell{:};
+
+for k = 1:length(ed)
+      data(k) = length(ed{k});
+end
+
+[number_times run_length] = hist(data, [1:max(data)])
+
+
+
+
+
+
+
+
