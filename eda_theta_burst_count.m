@@ -7,16 +7,20 @@
 % Go into the list and find the values in the theta range. Look for runs
 % and count these.
 
+% See: https://www.mathworks.com/matlabcentral/answers/81374-counting-the-number-of-runs-in-a-sequence
+% for counts only, and the function rowRuns.m for the count by runlength
+% matrix!
+
     Fs         =  128;              % Sampling Frequency
     windowTime =    2;              % Window length in SECONDS
     m          = windowTime * Fs;   % Window length in samples
-    overlap    =    0.50;           % Proportion of overlap
+    overlap    =    0.0;           % Proportion of overlap
 
-    f= '1005-session7_filtEEG.set';
+    f= '1029-session4_filtEEG.set';
 
     x   = pop_loadset(f);       % Load the data structure into x
     len = x.pnts;               % Number of samples in whole experiment
-    r   = (len/Fs);          % Convert samples to seconds
+    r   = (len/Fs)/60;          % Convert samples to minutes
     d   = x.data;               % Pull voltage data into d
 
     Mwidth  = floor(len/((1-overlap)*m) - 1); % This may be 1 column short!
@@ -37,26 +41,19 @@
         s = s + ceil((1-overlap)*m); 
     end
 
-%% Produces PM sized 14x1749 of peak frequencies
+%% Produces PM a matrix of peak frequencies
 
-thetaRuns = (PM >= 4) & (PM < 8);
+thetaRuns = (PM >= 4) & (PM < 8);   % thresholds theta peaks
 
-% One row:
+[lengths, counts] = rowRuns(thetaRuns);
 
-es    = sprintf('%d',thetaRuns(5,:));
-tcell = textscan(es, '%s', 'delimiter', '0', 'multipleDelimsAsOne', 1);
-ed = tcell{:};
-
-for k = 1:length(ed)
-      data(k) = length(ed{k});
+figure; 
+hold on; 
+for iii = 1:14 
+    plot(lengths(2:end), counts(iii,2:end));
 end
+title(f);
 
-[number_times run_length] = hist(data, [1:max(data)])
+% Average bursts per minute, by channel:
 
-
-
-
-
-
-
-
+sum(counts,2)./r
