@@ -16,7 +16,7 @@
     m          = windowTime * Fs;   % Window length in samples
     overlap    =    0.0;           % Proportion of overlap
 
-    f= '1029-session4_filtEEG.set';
+    f= '1031-session8_filtEEG.set';
 
     x   = pop_loadset(f);       % Load the data structure into x
     len = x.pnts;               % Number of samples in whole experiment
@@ -32,10 +32,10 @@
     while s + m < len
         [avgPwrSpec, freqAxis, ~] = averagePowerSpectrum(d(:, s:(s+m))', Fs, windowTime, 0);  % Overlap is two things in this code!!
         [M,i] = max(avgPwrSpec);
-        winners = freqAxis(i)';
+        winner = freqAxis(i)';
         
         t = (s/128);
-        PM(:, k) = winners;
+        PM(:, k) = winner;
         vt(k) = t;
         k = k + 1;
         s = s + ceil((1-overlap)*m); 
@@ -50,9 +50,10 @@ thetaRuns = (PM >= 4) & (PM < 8);   % thresholds theta peaks
 figure; 
 hold on; 
 for iii = 1:14 
-    plot(lengths(2:end), counts(iii,2:end));
+    plot(lengths(1:end), counts(iii,1:end));
 end
 title(f);
+hold off;
 
 % Average bursts per minute, by channel:
 
